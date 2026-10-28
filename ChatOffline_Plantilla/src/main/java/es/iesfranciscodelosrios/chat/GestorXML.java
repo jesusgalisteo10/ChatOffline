@@ -1,27 +1,39 @@
 package es.iesfranciscodelosrios.chat;
 
+import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import java.io.File;
 
 public class GestorXML {
-    // TODO Fase 1: guardar usuarios.xml usando JAXB (Marshaller).
+    private final File archivoUsuarios = new File("usuarios.xml");
+    private final File archivoMensajes = new File("mensajes.xml");
+
     public void guardarUsuarios(ListaUsuarios usuarios) throws JAXBException {
-        throw new UnsupportedOperationException("Pendiente: guardarUsuarios");
+        Marshaller m = JAXBContext.newInstance(ListaUsuarios.class).createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        m.marshal(usuarios, archivoUsuarios);
     }
 
-    // TODO Fase 1: recuperar usuarios.xml usando JAXB (Unmarshaller).
-    // Si no existe el archivo, devolver una ListaUsuarios vacía.
     public ListaUsuarios leerUsuarios() throws JAXBException {
-        throw new UnsupportedOperationException("Pendiente: leerUsuarios");
+        if (!archivoUsuarios.exists()) {
+            return new ListaUsuarios();
+        }
+        return (ListaUsuarios) JAXBContext.newInstance(ListaUsuarios.class)
+                .createUnmarshaller().unmarshal(archivoUsuarios);
     }
 
-    // TODO Fase 2: guardar mensajes.xml usando JAXB.
     public void guardarMensajes(ListaMensajes mensajes) throws JAXBException {
-        throw new UnsupportedOperationException("Pendiente: guardarMensajes");
+        Marshaller m = JAXBContext.newInstance(ListaMensajes.class).createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        m.marshal(mensajes, archivoMensajes);
     }
 
-    // TODO Fase 2: recuperar mensajes.xml usando JAXB.
-    // Si no existe el archivo, devolver una ListaMensajes vacía.
     public ListaMensajes leerMensajes() throws JAXBException {
-        throw new UnsupportedOperationException("Pendiente: leerMensajes");
+        if (!archivoMensajes.exists()) {
+            return new ListaMensajes();
+        }
+        return (ListaMensajes) JAXBContext.newInstance(ListaMensajes.class)
+                .createUnmarshaller().unmarshal(archivoMensajes);
     }
 }
