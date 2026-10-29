@@ -1,86 +1,43 @@
 package es.iesfranciscodelosrios.chat;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
 
-public class Main {
-    public static void main(String[] args) {
-        Scanner teclado = new Scanner(System.in);
-        GestorChat chat = new GestorChat();
-        int opcion = -1;
 
-        while (opcion != 0) {
-            System.out.println("\n--- Chat Offline ---");
-            System.out.println("1. Registrar usuario");
-            System.out.println("2. Enviar mensaje");
-            System.out.println("3. Consultar conversación");
-            System.out.println("4. Estadísticas");
-            System.out.println("5. Exportar conversación");
-            System.out.println("6. Enviar mensaje con archivo adjunto");
-            System.out.println("0. Salir");
-            System.out.print("Opción: ");
-            try {
-                opcion = Integer.parseInt(teclado.nextLine().trim());
-                switch (opcion) {
-                    case 1 -> {
-                        System.out.print("Nombre: ");
-                        chat.registrarUsuario(teclado.nextLine().trim());
-                        System.out.println("Usuario registrado.");
-                    }
-                    case 2 -> {
-                        String[] par = elegirPar(teclado, chat, "Emisor", "Destinatario");
-                        if (par != null) {
-                            chat.enviarMensaje(par[0], par[1], pedir(teclado, "Mensaje: "));
-                            System.out.println("Mensaje enviado.");
-                        }
-                    }
-                    case 3 -> {
-                        String[] par = elegirPar(teclado, chat, "Tu usuario", "Conversación con");
-                        if (par != null) {
-                            chat.consultarConversacion(par[0], par[1])
-                                    .forEach(m -> System.out.println(chat.formatear(m)));
-                        }
-                    }
-                    case 4 -> {
-                        String[] par = elegirPar(teclado, chat, "Usuario A", "Usuario B");
-                        if (par != null) {
-                            Map<String, Long> stats = chat.estadisticas(par[0], par[1]);
-                            System.out.println("Total de mensajes: " + stats.values().stream().mapToLong(Long::longValue).sum());
-                            stats.forEach((u, n) -> System.out.println("  " + u + ": " + n));
-                            System.out.println("Palabras más usadas: " + chat.palabrasComunes(par[0], par[1]));
-                        }
-                    }
-                    case 5 -> {
-                        String[] par = elegirPar(teclado, chat, "Usuario A", "Usuario B");
-                        if (par != null) {
-                            String ruta = pedir(teclado, "Archivo de destino (ej. conversacion.txt): ");
-                            chat.exportarConversacion(par[0], par[1], Path.of(ruta));
-                            System.out.println("Exportado.");
-                        }
-                    }
-                    case 6 -> {
-                        String[] par = elegirPar(teclado, chat, "Emisor", "Destinatario");
-                        if (par != null) {
-                            String texto = pedir(teclado, "Mensaje: ");
-                            String ruta = pedir(teclado, "Ruta del archivo: ");
-                            chat.enviarConAdjunto(par[0], par[1], texto, Path.of(ruta));
-                            System.out.println("Mensaje con adjunto enviado.");
-                        }
-                    }
-                    case 0 -> System.out.println("Adiós.");
-                    default -> System.out.println("Opción no válida.");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Escribe un número.");
-                opcion = -1;
-            } catch (java.util.NoSuchElementException e) {
-                break;
-            } catch (Exception e) {
-                System.out.println("Error: " + e.getMessage());
-            }
-        }
-        teclado.close();
+@XmlAccessorType(XmlAccessType.FIELD)
+public class Mensaje {
+    private String emisor;
+    private String destinatario;
+    private String contenido;
+    private String fecha; // ISO-8601, por ejemplo: 2026-10-26T13:45:00
+    private String adjuntoRuta; // Puede ser null si no hay adjunto.
+    private String adjuntoNombre;
+    private long adjuntoTamano;
+    private String adjuntoTipo;
+
+    public Mensaje() { } // JAXB necesita un constructor sin argumentos.
+
+    public Mensaje(String emisor, String destinatario, String contenido, String fecha) {
+        this.emisor = emisor;
+        this.destinatario = destinatario;
+        this.contenido = contenido;
+        this.fecha = fecha;
     }
+
+    public String getEmisor() { return emisor; }
+    public void setEmisor(String emisor) { this.emisor = emisor; }
+    public String getDestinatario() { return destinatario; }
+    public void setDestinatario(String destinatario) { this.destinatario = destinatario; }
+    public String getContenido() { return contenido; }
+    public void setContenido(String contenido) { this.contenido = contenido; }
+    public String getFecha() { return fecha; }
+    public void setFecha(String fecha) { this.fecha = fecha; }
+    public String getAdjuntoRuta() { return adjuntoRuta; }
+    public void setAdjuntoRuta(String adjuntoRuta) { this.adjuntoRuta = adjuntoRuta; }
+    public String getAdjuntoNombre() { return adjuntoNombre; }
+    public void setAdjuntoNombre(String adjuntoNombre) { this.adjuntoNombre = adjuntoNombre; }
+    public long getAdjuntoTamano() { return adjuntoTamano; }
+    public void setAdjuntoTamano(long adjuntoTamano) { this.adjuntoTamano = adjuntoTamano; }
+    public String getAdjuntoTipo() { return adjuntoTipo; }
+    public void setAdjuntoTipo(String adjuntoTipo) { this.adjuntoTipo = adjuntoTipo; }
+}
