@@ -84,3 +84,49 @@ public class Main {
         }
         teclado.close();
     }
+    private static String pedir(Scanner teclado, String texto) {
+        System.out.print(texto);
+        return teclado.nextLine().trim();
+    }
+
+    // Lista los usuarios numerados y devuelve el elegido (o null si no es válido)
+    private static String elegirUsuario(Scanner teclado, List<String> usuarios, String texto) {
+        System.out.println(texto + ":");
+        for (int i = 0; i < usuarios.size(); i++) {
+            System.out.println("  " + (i + 1) + ". " + usuarios.get(i));
+        }
+        System.out.print("Número: ");
+        try {
+            int n = Integer.parseInt(teclado.nextLine().trim());
+            if (n >= 1 && n <= usuarios.size()) {
+                return usuarios.get(n - 1);
+            }
+        } catch (NumberFormatException e) {
+            // se trata como número no válido
+        }
+        System.out.println("Número no válido.");
+        return null;
+    }
+
+    // Elige dos usuarios distintos. Devuelve null si no se puede o si la elección no es válida.
+    private static String[] elegirPar(Scanner teclado, GestorChat chat, String textoA, String textoB)
+            throws Exception {
+        List<String> usuarios = chat.listarUsuarios();
+        if (usuarios.isEmpty()) {
+            System.out.println("No hay usuarios creados: no se pueden leer conversaciones ni enviar mensajes.");
+            return null;
+        }
+        if (usuarios.size() < 2) {
+            System.out.println("Solo hay 1 usuario. Registra al menos otro para poder chatear.");
+            return null;
+        }
+        String a = elegirUsuario(teclado, usuarios, textoA);
+        if (a == null) {
+            return null;
+        }
+        List<String> otros = new ArrayList<>(usuarios);
+        otros.remove(a);
+        String b = elegirUsuario(teclado, otros, textoB);
+        return b == null ? null : new String[] {a, b};
+    }
+}
