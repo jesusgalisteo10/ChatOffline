@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 /**
  * Clase que gestiona la lógica del chat: usuarios, mensajes y archivos adjuntos.
- * Los datos se guardan en ficheros XML a través de GestorXML.
+ * Los datos se guardan en ficheros XML a través de  GestorXML.
  */
 public class GestorChat {
     // Objeto que lee y escribe los ficheros XML
